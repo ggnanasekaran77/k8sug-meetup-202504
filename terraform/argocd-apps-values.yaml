@@ -1,0 +1,35 @@
+applications:
+  dev-demo:
+    namespace: argocd
+    additionalAnnotations:
+      argocd.argoproj.io/manifest-generate-paths: .;./base 
+    finalizers:
+    - resources-finalizer.argocd.argoproj.io
+    project: dev-demo
+    source:
+      repoURL: 'https://github.com/ggnanasekaran77/kube-demoapp.git'
+      path: apps/environments/dev
+      targetRevision: HEAD
+    destination:
+      server: 'https://kubernetes.default.svc'
+      namespace: argocd
+
+projects:
+  dev-demo:
+    namespace: argocd
+    finalizers:
+      - resources-finalizer.argocd.argoproj.io
+    description: "My dev demo project"
+    sourceRepos:
+      - '*'
+    destinations:
+      - namespace: '*'
+        server: '*'
+    clusterResourceWhitelist:
+      - group: '*'
+        kind: '*'
+    namespaceResourceWhitelist:
+      - group: "*"
+        kind: "*"
+    orphanedResources:
+      warn: false
